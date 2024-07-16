@@ -1,6 +1,7 @@
 from seleniumbase import BaseCase
 from selenium.common.exceptions import ElementNotVisibleException
 from seleniumbase.fixtures.page_actions import wait_for_element_visible
+from selenium.webdriver.common.by import By
 import time
 
 BaseCase.main(__name__, __file__)
@@ -58,12 +59,22 @@ class MyTestClass(BaseCase):
 
         # Logout
         try:
-            wait_for_element_visible(self.driver, 'a#logout_sidebar_link', timeout=10)
-            self.scroll_to('a#logout_sidebar_link')
-            self.click("a#logout_sidebar_link")
+            BUGGER_MENU_XPATH = (By.XPATH, "//button[@id='react-burger-menu-btn']")
+            l = self.driver.find_element(*BUGGER_MENU_XPATH)
+            l.click()
+            time.sleep(1)
+
+            # //a[@id="logout_sidebar_link"]
+            LOGOUT_XPATH = (By.XPATH, "//a[@id='logout_sidebar_link']")
+            g = self.driver.find_element(*LOGOUT_XPATH)
+            g.click()
         except ElementNotVisibleException:
-            print("Element 'a#logout_sidebar_link' is still not visible after waiting.")
+            print("""XPath: `//button[@id='react-burger-menu-btn']` is still not visible after waiting.""")
             # Handle the exception as per your test scenario.
 
         # Verify logout
-        self.assert_element_present("div#login_button_container")
+        time.sleep(3)
+        LOGIN_XPATH = (By.XPATH, "//input[@id='login-button']")
+        l = self.driver.find_element(*LOGIN_XPATH)
+        self.assertEqual(l.accessible_name, "Login")
+        time.sleep(3)
